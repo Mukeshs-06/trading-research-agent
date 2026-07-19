@@ -1,5 +1,10 @@
 # 📈 AI Trading Research Platform
 
+[![Live Streamlit Demo](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://trading-research-agent-hxwhnkaau9mebe4arh2arz.streamlit.app/)
+[![CI Test Suite](https://github.com/Mukeshs-06/trading-research-agent/actions/workflows/ci.yml/badge.svg)](https://github.com/Mukeshs-06/trading-research-agent/actions/workflows/ci.yml)
+
+> 🚀 **Live Interactive Web Dashboard**: [https://trading-research-agent-hxwhnkaau9mebe4arh2arz.streamlit.app/](https://trading-research-agent-hxwhnkaau9mebe4arh2arz.streamlit.app/)
+
 A production-grade, multi-agent AI system for automated equity research, fundamental analysis, technical indicator evaluation, and news sentiment synthesis built with **LangGraph**, **LangChain**, **FastAPI**, **Streamlit**, and **Groq (Llama-3.3-70B)**.
 
 ---
@@ -9,7 +14,7 @@ A production-grade, multi-agent AI system for automated equity research, fundame
 - **Parallel LangGraph Execution**: Runs `Research`, `Technical`, and `News` data collection nodes concurrently in parallel branches, reducing total pipeline latency.
 - **Selective Query Planning**: `Planner Agent` dynamically selects only the necessary specialized agents based on user intent (e.g. news-only vs. full comparative research).
 - **Atomic Tool Orchestration**: Agents directly invoke atomic financial tools (`resolve_company`, `get_stock_data`, `technical_analysis`, `get_company_news`) without unnecessary composite wrappers.
-- **Support & Resistance Precision**: swing high/low 6-month support (`df["Low"].min()`) and resistance (`df["High"].max()`) calculations.
+- **Support & Resistance Precision**: Swing high/low 6-month support (`df["Low"].min()`) and resistance (`df["High"].max()`) calculations.
 - **Strict Non-Advisory Neutrality**: Enforces non-advisory quantitative reporting standards (no "buy/sell" recommendations or predictive assertions).
 - **Human-in-the-Loop (HITL)**: Built-in human analyst approval & revision workflow.
 - **Execution Trace & Telemetry**: Records real-time step duration, tool calls, evidence counts (`X Bullish, Y Bearish, Z Neutral`), and confidence metrics.
