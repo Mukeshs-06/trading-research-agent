@@ -1,0 +1,15 @@
+langchain>=0.3.0
+langchain-core>=0.3.0
+langchain-groq>=0.2.0
+langgraph>=0.2.0
+langgraph-checkpoint>=2.0.0
+yfinance>=0.2.40
+feedparser>=6.0.10
+pandas>=2.0.0
+numpy>=1.24.0
+pydantic>=2.7.0
+fastapi>=0.110.0
+uvicorn>=0.28.0
+streamlit>=1.32.0
+python-dotenv>=1.0.0
+pytest>=8.0.0
