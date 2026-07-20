@@ -1,0 +1,15 @@
+# Watchlist Configuration for Autonomous AI Market Intelligence Agent
+
+watchlist:
+  - AAPL
+  - NVDA
+  - MSFT
+  - TSLA
+  - TCS.NS
+  - INFY.NS
+
+settings:
+  smart_alert_only: false       # If true, only dispatches email when significant alerts are triggered
+  email_recipient: null        # Fallback to EMAIL_USER environment variable if null
+  rsi_overbought: 70
+  rsi_oversold: 30

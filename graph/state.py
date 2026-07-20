@@ -1,4 +1,19 @@
-from typing import TypedDict, List, Dict, Any, Optional
+import operator
+from typing import Annotated, TypedDict, List, Dict, Any, Optional
+
+def merge_dict(a: Dict[str, Any], b: Dict[str, Any]) -> Dict[str, Any]:
+    res = a.copy() if a else {}
+    if b:
+        res.update(b)
+    return res
+
+def merge_list(a: List[Any], b: List[Any]) -> List[Any]:
+    res = list(a) if a else []
+    if b:
+        for item in b:
+            if item not in res:
+                res.append(item)
+    return res
 
 class ExecutionTraceItem(TypedDict):
     step: str
@@ -12,9 +27,9 @@ class GraphState(TypedDict, total=False):
     companies: List[str]
     execution_plan: List[str]
     current_step: int
-    stock_data: Dict[str, Any]
-    technical_data: Dict[str, Any]
-    news_data: Dict[str, Any]
+    stock_data: Annotated[Dict[str, Any], merge_dict]
+    technical_data: Annotated[Dict[str, Any], merge_dict]
+    news_data: Annotated[Dict[str, Any], merge_dict]
     research_summary: str
     technical_summary: str
     news_summary: str
@@ -24,7 +39,7 @@ class GraphState(TypedDict, total=False):
     revision_count: int
     human_approved: Optional[bool]
     human_feedback: Optional[str]
-    execution_trace: List[Dict[str, Any]]
-    timings: Dict[str, float]
-    errors: List[str]
+    execution_trace: Annotated[List[Dict[str, Any]], merge_list]
+    timings: Annotated[Dict[str, float], merge_dict]
+    errors: Annotated[List[str], merge_list]
     metadata: Dict[str, Any]
