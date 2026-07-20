@@ -5,12 +5,17 @@ on:
     - cron: '0 1 * * 1-5' # Runs at 01:00 UTC Mon-Fri
   workflow_dispatch:      # Enables manual execution trigger from GitHub UI
 
+permissions:
+  contents: write
+
 jobs:
   run-daily-intelligence:
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
+      with:
+        persist-credentials: true
 
     - name: Set up Python 3.12
       uses: actions/setup-python@v5
@@ -37,4 +42,4 @@ jobs:
         git config --global user.name "github-actions[bot]"
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git add reports/
-        git diff --quiet && git diff --staged --quiet || (git commit -m "chmod: archive daily market intelligence report [skip ci]" && git push)
+        git diff --quiet && git diff --staged --quiet || (git commit -m "chmod: archive daily market intelligence report [skip ci]" && git push origin HEAD:${{ github.ref_name }})
