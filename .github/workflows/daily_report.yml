@@ -19,7 +19,7 @@ jobs:
         ref: ${{ github.ref }}
 
     - name: Set up Python 3.12
-      uses: actions/setup-python@423742b46e3d257a6b078508f79f22047345db8b # v5.3.0
+      uses: actions/setup-python@0a5c61591373683505dbb353538426011212936c # v5.3.0
       with:
         python-version: "3.12"
         cache: "pip"
@@ -39,7 +39,7 @@ jobs:
         python scripts/daily_report.py
 
     - name: Commit & Push Archived Reports
-      uses: stefanzweifel/git-auto-commit-action@e5854085d1a5563e77828050c7bb1e79fc7d97e9 # v5.0.1
+      uses: stefanzweifel/git-auto-commit-action@8621435c26c2d74ebd7778db29e138c200023057 # v5.0.1
       with:
         commit_message: "chmod: archive daily market intelligence report [skip ci]"
         file_pattern: "reports/*"
