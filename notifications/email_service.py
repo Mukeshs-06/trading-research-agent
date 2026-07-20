@@ -1,6 +1,7 @@
 import os
 import smtplib
 import datetime
+import re
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from typing import List, Dict, Any
@@ -8,43 +9,116 @@ from core.logger import logger
 
 def convert_markdown_to_clean_html(markdown_text: str) -> str:
     """
-    Simple markdown-to-HTML converter for report synthesis.
-    Converts headers, lists, code blocks, and basic bold text.
+    Converts markdown text into email-compliant HTML, including full support for
+    headers, lists, bold text, code tags, and Markdown Tables (| Col | Col |).
     """
-    html_lines = []
+    lines = markdown_text.split("\n")
+    html_out = []
     in_list = False
+    in_table = False
+    table_lines = []
 
-    for line in markdown_text.split("\n"):
+    def flush_list():
+        nonlocal in_list
+        if in_list:
+            html_out.append("</ul>")
+            in_list = False
+
+    def process_table(t_lines: List[str]):
+        if not t_lines:
+            return ""
+        
+        header_cells = []
+        body_rows = []
+
+        for idx, tline in enumerate(t_lines):
+            # Strip outer vertical bars if present
+            clean_line = tline.strip()
+            if clean_line.startswith("|"):
+                clean_line = clean_line[1:]
+            if clean_line.endswith("|"):
+                clean_line = clean_line[:-1]
+
+            cells = [c.strip() for c in clean_line.split("|")]
+
+            # Skip table alignment delimiter row (| --- | --- |)
+            if idx == 1 and all(set(c).issubset({"-", ":", " "}) for c in cells):
+                continue
+
+            if idx == 0:
+                header_cells = cells
+            else:
+                body_rows.append(cells)
+
+        t_html = ["<div style='overflow-x:auto; margin:20px 0;'><table style='width:100%; border-collapse:collapse; font-family:sans-serif; font-size:13px; background-color:#0f172a; border:1px solid #334155; border-radius:8px;'>"]
+        
+        # Header Row
+        if header_cells:
+            t_html.append("<thead><tr style='background-color:#1e293b; color:#38bdf8;'>")
+            for cell in header_cells:
+                t_html.append(f"<th style='padding:10px 12px; border:1px solid #334155; text-align:left; font-weight:600;'>{cell}</th>")
+            t_html.append("</tr></thead>")
+
+        # Body Rows
+        if body_rows:
+            t_html.append("<tbody>")
+            for r_idx, row in enumerate(body_rows):
+                bg_color = "#0f172a" if r_idx % 2 == 0 else "#1e293b"
+                t_html.append(f"<tr style='background-color:{bg_color};'>")
+                for cell in row:
+                    t_html.append(f"<td style='padding:8px 12px; border:1px solid #334155; color:#cbd5e1;'>{cell}</td>")
+                t_html.append("</tr>")
+            t_html.append("tbody>")
+
+        t_html.append("</table></div>")
+        return "".join(t_html)
+
+    for line in lines:
         line_str = line.strip()
+
+        # Table Line Detection
+        if line_str.startswith("|") and line_str.endswith("|") and len(line_str) > 2:
+            flush_list()
+            in_table = True
+            table_lines.append(line_str)
+            continue
+        else:
+            if in_table:
+                html_out.append(process_table(table_lines))
+                table_lines = []
+                in_table = False
+
         if not line_str:
-            if in_list:
-                html_lines.append("</ul>")
-                in_list = False
+            flush_list()
             continue
 
         if line_str.startswith("# "):
-            html_lines.append(f"<h1 style='color:#38bdf8; font-family:sans-serif; margin-top:24px;'>{line_str[2:]}</h1>")
+            flush_list()
+            html_out.append(f"<h1 style='color:#38bdf8; font-family:sans-serif; margin-top:24px; font-size:22px;'>{line_str[2:]}</h1>")
         elif line_str.startswith("## "):
-            html_lines.append(f"<h2 style='color:#818cf8; font-family:sans-serif; margin-top:20px; border-bottom:1px solid #334155; padding-bottom:6px;'>{line_str[3:]}</h2>")
+            flush_list()
+            html_out.append(f"<h2 style='color:#818cf8; font-family:sans-serif; margin-top:20px; border-bottom:1px solid #334155; padding-bottom:6px; font-size:18px;'>{line_str[3:]}</h2>")
         elif line_str.startswith("### "):
-            html_lines.append(f"<h3 style='color:#cbd5e1; font-family:sans-serif; margin-top:16px;'>{line_str[4:]}</h3>")
+            flush_list()
+            html_out.append(f"<h3 style='color:#cbd5e1; font-family:sans-serif; margin-top:16px; font-size:15px;'>{line_str[4:]}</h3>")
         elif line_str.startswith("- ") or line_str.startswith("* "):
             if not in_list:
-                html_lines.append("<ul style='color:#e2e8f0; line-height:1.6;'>")
+                html_out.append("<ul style='color:#e2e8f0; line-height:1.6; margin:8px 0; padding-left:20px;'>")
                 in_list = True
             item_content = line_str[2:].replace("**", "<b>").replace("**", "</b>")
-            html_lines.append(f"<li>{item_content}</li>")
+            html_out.append(f"<li style='margin-bottom:4px;'>{item_content}</li>")
         else:
-            if in_list:
-                html_lines.append("</ul>")
-                in_list = False
+            flush_list()
             p_content = line_str.replace("**", "<b>").replace("**", "</b>")
-            html_lines.append(f"<p style='color:#cbd5e1; line-height:1.6;'>{p_content}</p>")
+            # Inline code formatting
+            p_content = re.sub(r'`([^`]+)`', r'<code style="background:#1e293b; color:#38bdf8; padding:2px 6px; border-radius:4px; font-size:12px;">\1</code>', p_content)
+            html_out.append(f"<p style='color:#cbd5e1; line-height:1.6; margin:8px 0;'>{p_content}</p>")
 
-    if in_list:
-        html_lines.append("</ul>")
+    flush_list()
+    if in_table:
+        html_out.append(process_table(table_lines))
 
-    return "\n".join(html_lines)
+    return "\n".join(html_out)
 
 
 def generate_html_email_digest(
@@ -87,7 +161,7 @@ def generate_html_email_digest(
         <meta charset="utf-8">
     </head>
     <body style="background-color:#030712; color:#f3f4f6; font-family:'Segoe UI', Helvetica, Arial, sans-serif; margin:0; padding:20px;">
-        <div style="max-width:700px; margin:0 auto; background-color:#0f172a; border:1px solid #1e293b; border-radius:12px; padding:30px;">
+        <div style="max-width:750px; margin:0 auto; background-color:#0f172a; border:1px solid #1e293b; border-radius:12px; padding:30px;">
             <div style="border-bottom:1px solid #1e293b; padding-bottom:16px; margin-bottom:20px;">
                 <h1 style="color:#38bdf8; margin:0; font-size:24px;">📈 Autonomous AI Market Intelligence</h1>
                 <p style="color:#64748b; margin:6px 0 0 0; font-size:14px;">Daily Digest • {date_str} • Monitored Watchlist: {', '.join(watchlist)}</p>

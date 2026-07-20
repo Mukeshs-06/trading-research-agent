@@ -27,17 +27,21 @@ def test_detect_smart_alerts():
     assert alerts[0]["type"] in ["RSI_OVERBOUGHT", "NEAR_RESISTANCE"]
 
 def test_convert_markdown_to_clean_html():
-    md = "# Header 1\n- Item 1\n- Item 2"
+    md = "# Header 1\n- Item 1\n- Item 2\n\n| Metric | AAPL |\n| --- | --- |\n| Price | 200 |"
     html = convert_markdown_to_clean_html(md)
     assert "<h1" in html
-    assert "<li>Item 1</li>" in html
+    assert "Item 1" in html
+    assert "<table" in html
+    assert "<th" in html
+    assert "<td" in html
 
 def test_generate_html_email_digest():
     html = generate_html_email_digest(
-        report_markdown="# Daily Report\nTest content",
+        report_markdown="# Daily Report\nTest content\n\n| Metric | AAPL |\n| --- | --- |\n| Price | $200 |",
         alerts=[],
         watchlist=["AAPL"],
         execution_trace=[{"step": "research", "status": "completed", "duration_seconds": 1.2, "tools_called": ["get_stock_data"]}]
     )
     assert "Autonomous AI Market Intelligence" in html
     assert "AAPL" in html
+    assert "<table" in html
