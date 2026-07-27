@@ -1,38 +1,38 @@
 {
   "AAPL": {
-    "current_price": 321.66,
-    "RSI": 62.98,
+    "current_price": 333.02,
+    "RSI": 67.7,
     "Trend": "Bullish Momentum",
-    "timestamp": "2026-07-24T04:00:08.044688"
+    "timestamp": "2026-07-27T04:29:40.092270"
   },
   "NVDA": {
-    "current_price": 208.76,
-    "RSI": 62.12,
+    "current_price": 206.84,
+    "RSI": 59.62,
     "Trend": "Bullish Momentum",
-    "timestamp": "2026-07-24T04:00:08.044700"
+    "timestamp": "2026-07-27T04:29:40.092278"
   },
   "MSFT": {
-    "current_price": 381.58,
-    "RSI": 44.27,
+    "current_price": 381.7,
+    "RSI": 46.6,
     "Trend": "Bearish Momentum",
-    "timestamp": "2026-07-24T04:00:08.044704"
+    "timestamp": "2026-07-27T04:29:40.092280"
   },
   "TSLA": {
-    "current_price": 319.69,
-    "RSI": 28.97,
+    "current_price": 313.03,
+    "RSI": 15.72,
     "Trend": "Bearish Momentum",
-    "timestamp": "2026-07-24T04:00:08.044708"
+    "timestamp": "2026-07-27T04:29:40.092282"
   },
   "TCS.NS": {
-    "current_price": 2248.1,
-    "RSI": 74.26,
+    "current_price": 2300.5,
+    "RSI": 75.1,
     "Trend": "Neutral / Consolidation",
-    "timestamp": "2026-07-24T04:00:08.044710"
+    "timestamp": "2026-07-27T04:29:40.092284"
   },
   "INFY.NS": {
-    "current_price": 1037.3,
-    "RSI": 48.82,
-    "Trend": "Bearish Momentum",
-    "timestamp": "2026-07-24T04:00:08.044713"
+    "current_price": 1073.0,
+    "RSI": 50.29,
+    "Trend": "Bullish Momentum",
+    "timestamp": "2026-07-27T04:29:40.092285"
   }
 }
