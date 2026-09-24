@@ -1,8 +1,8 @@
 {
   "Apple": {
-    "current_price": NaN,
-    "RSI": 50.0,
-    "Trend": "Bearish Momentum",
-    "timestamp": "2026-09-23T05:20:01.741145"
+    "current_price": 337.02,
+    "RSI": 62.44,
+    "Trend": "Bullish Momentum",
+    "timestamp": "2026-09-24T05:35:43.204073"
   }
 }
